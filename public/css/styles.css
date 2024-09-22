@@ -192,14 +192,15 @@ section.items h3 {
       align-items: center;
   }
 
-  section.items h3 {
+  section.items .title-sim {
     grid-column: 1/2;
-    grid-row: 2/3;              /* Optional rounded corners */
+    grid-row: 2/3;  
+    position: absolute;     
   }
 
   .updates {
     grid-column: 1/2;
-    grid-row: 2/3;            /* Allow both sections to take full width */
+    grid-row: 2/3;  
   }
 
   .reviews {
