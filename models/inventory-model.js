@@ -25,4 +25,24 @@ async function getInventoryByClassificationId(classification_id) {
   }
 }
 
-module.exports = {getClassifications, getInventoryByClassificationId};
+async function getDetailsByInvId(inv_id) {
+  try {
+    const detailsData = await pool.query(
+      `SELECT * FROM public.inventory
+       WHERE inv_id = $1`,
+      [inv_id]
+    );
+
+    // Return the rows from the query result
+    return detailsData.rows;
+  } catch (e) {
+    console.error('Error fetching inventory details:', e.message);
+    
+    // Optionally, rethrow or handle the error more gracefully
+    throw new Error('Could not fetch inventory details');
+  }
+}
+
+module.exports = {getClassifications, getInventoryByClassificationId,
+  getDetailsByInvId
+};

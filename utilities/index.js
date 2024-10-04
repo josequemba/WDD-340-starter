@@ -57,6 +57,56 @@ Util.getNav = async function (req, res, next) {
   return list
 }
 
+/* **************************************
+* Build the details view HTML
+* ************************************ */
+Util.buildVehicleDetail = async function(vehicles) {
+  let details = '';  // Initialize details to an empty string
+
+  if (vehicles.length > 0) {
+    details = '<div class="vehicle-detail">';
+    
+    vehicles.forEach(vehicle => {
+      /* details += '<a href="../../inv/detail/'+ vehicle.inv_id 
+      + '" title="View ' + vehicle.inv_make + ' '+ vehicle.inv_model 
+      + 'details">'; */
+
+      // Vehicle Image
+      details += '<div class="vehicle-image">';
+      details += '<img src="' + vehicle.inv_image + '" alt="Full image of ' + vehicle.inv_make + ' ' + vehicle.inv_model + '">';
+      details += '</div>';
+      
+      // Vehicle Info Section
+      details += '<div class="vehicle-info">';
+      
+      // Title (Make, Model, Year)
+      details += '<h1>' + vehicle.inv_year + ' ' + vehicle.inv_make + ' ' + vehicle.inv_model + '</h1>';
+      
+      // Price
+      details += '<p class="price">Price: $' + new Intl.NumberFormat('en-US').format(vehicle.inv_price) + '</p>';
+      
+      // Mileage
+      details += '<p class="mileage">Mileage: ' + new Intl.NumberFormat('en-US').format(vehicle.inv_miles) + ' miles</p>';
+      
+      //color
+      details += '<p class="vehicle-color">Color: ' + vehicle.inv_color + '</p>';
+
+      // Description
+      details += '<div class="description">';
+      details += '<h3>Description:</h3>';
+      details += '<p>' + vehicle.inv_description + '</p>';
+      details += '</div>';
+      
+      details += '</div>';  // Close vehicle-info
+      details += '</div>';  // Close vehicle-detail
+    });
+  } else {
+    details = '<p class="notice">Sorry, the vehicle details could not be found.</p>';
+  }
+
+  return details;
+};
+
 /* ****************************************
  * Middleware For Handling Errors
  * Wrap other function in this for 
