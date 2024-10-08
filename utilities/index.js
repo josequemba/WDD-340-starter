@@ -107,6 +107,10 @@ Util.buildVehicleDetail = async function(vehicles) {
   return details;
 };
 
+Util.buildLoginForm = async function () {
+  
+}
+
 /* ****************************************
  * Middleware For Handling Errors
  * Wrap other function in this for 

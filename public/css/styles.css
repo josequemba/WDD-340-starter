@@ -405,19 +405,95 @@ p.notice {
   text-align: center;
 }
 
-/* Mobile responsiveness */
-@media (max-width: 768px) {
-  .error-container h1 {
-    font-size: 3em;
-  }
+/* login */
+.login-container {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  margin: auto;
+}
 
-  .error-container p {
-    font-size: 1.2em;
-  }
+.login-container h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
 
-  .error-container .nav a {
-    font-size: 1em;
-  }
+.login-container .flash-message {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 3px;
+}
+
+.login-container .form-group {
+  margin-bottom: 15px;
+}
+
+.login-container label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.login-container input[type="email"],
+.login-container input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+.login-container button.btn-submit {
+  background-color: #007bff;
+  color: #fff;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  width: 100%;
+}
+
+.login-container button.btn-submit:hover {
+  background-color: #0056b3;
+}
+
+.login-container p {
+  margin-top: 15px;
+  text-align: center;
+}
+
+.login-container a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.login-container a:hover {
+  text-decoration: underline;
+}
+
+/* flash message */
+#messages {
+  margin: 20px; /* Add some margin for better spacing */
+}
+
+#messages ul {
+  list-style-type: none; /* Remove bullet points */
+  padding: 10px; /* Add padding */
+  border-radius: 5px; /* Rounded corners */
+}
+
+.notice {
+  background-color: #f0ad4e; /* Bootstrap warning color */
+  color: white; /* White text */
+  border: 1px solid #eea236; /* Border color */
+}
+
+.success {
+  background-color: #5cb85c; /* Bootstrap success color */
+  color: white; /* White text */
+  border: 1px solid #4cae4c; /* Border color */
 }
 
 /* Responsive behavior */
