@@ -1,4 +1,5 @@
 const pool = require("../database/")
+
 /* *****************************
 *   Register new account
 * *************************** */
@@ -11,5 +12,36 @@ async function registerAccount(account_firstname, account_lastname, account_emai
     }
 }
 
-module.exports = { registerAccount }
+/* **********************
+ *   Check for existing email
+ * ********************* */
+async function checkExistingEmail(account_email){
+    try {
+      const sql = "SELECT * FROM account WHERE account_email = $1"
+      const email = await pool.query(sql, [account_email])
+      return email.rowCount
+    } catch (error) {
+      return error.message
+    }
+}
+
+/* *****************************
+*   Login into account
+* *************************** */
+async function loginAccount(account_email, account_password) {
+    try {
+        const sql = "SELECT * FROM account WHERE account_email = $1 AND account_password = $2"
+        const result = await pool.query(sql, [account_email, account_password])
+
+        // Check if a user was found
+        if (result.rows[0].account_email = account_email) {
+            return result.rows[0].account_email // Return the user's details (excluding password ideally)
+        } else {
+            return "Invalid email or password"
+        }
+    } catch (error) {
+        return error.message
+    }
+}
+module.exports = { registerAccount, checkExistingEmail, loginAccount }
   

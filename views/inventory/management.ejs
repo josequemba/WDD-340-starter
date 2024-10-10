@@ -1,0 +1,16 @@
+<% if (title) { %>
+    <h1><%= title %></h1>
+<% } else {
+      res.redirect('/')
+} %>
+
+<%- messages() %>
+
+<section class="inventory-management">
+    <p>Welcome to the Inventory Management view. Please choose an action below:</p>
+    <ul>
+        <!-- MVC Links (Route to controller actions, not views directly) -->
+        <li><a href="/inv/add-classification">Add New Classification</a></li>
+        <li><a href="/inv/add-inventory">Add New Inventory Item</a></li>
+    </ul>
+</section>

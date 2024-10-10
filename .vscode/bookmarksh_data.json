@@ -1,0 +1,48 @@
+{
+  "mode": "all",
+  "bookmarks": [
+    {
+      "id": "uqJwFjJ",
+      "label": "Login validation",
+      "path": "__root__/views/account/login.ejs",
+      "params": "0,21,4,0,11",
+      "subs": [
+        {
+          "id": "uqJxonj",
+          "label": "check login data",
+          "path": "__root__/utilities/account-validation.js",
+          "params": "0,99,2,14,3",
+          "subs": []
+        },
+        {
+          "id": "uqJxYHp",
+          "label": "query to get log",
+          "path": "__root__/models/account-model.js",
+          "params": "0,74,0,45,1",
+          "subs": []
+        }
+      ]
+    },
+    {
+      "id": "uqJzVWc",
+      "label": "login controller",
+      "path": "__root__/controllers/accountController.js",
+      "params": "0,132,0,171,1",
+      "subs": []
+    },
+    {
+      "id": "uqJBDZp",
+      "label": "route",
+      "path": "__root__/routes/accountRoute.js",
+      "params": "0,20,0,26,1",
+      "subs": []
+    },
+    {
+      "id": "uqJBIU8",
+      "label": "login rules",
+      "path": "__root__/utilities/account-validation.js",
+      "params": "0,79,2,0,3",
+      "subs": []
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+<% if (title) { %>
+    <h1><%= title %></h1>
+<% } else {
+      res.redirect('/')
+} %>
+
+<div class="form-container">
+
+    <!-- Flash Message Section -->
+    <%- messages() %> 
+
+    <!-- Errors message display from the server side validator -->
+    <% if (errors) { %>
+         <ul class="notice">
+        <% errors.array().forEach(error => { %>
+            <li><%= error.msg %></li>
+        <%  }) %>
+         </ul>
+    <% } %>
+
+    <h2>Field is Required</h2>
+    <p>Name must be Alphabetic Characters only.</p>
+
+    <form id="classificationForm" action="/inv/add-classification" method="POST">
+        <div class="form-group">
+            <label for="classificationName">Classification Name:</label>
+            <input type="text" name="classification_name" id="classificationName" 
+            placeholder="Enter classification name" 
+            required 
+            pattern="^[a-zA-Z]+$" 
+            title="Only alphabetic characters are allowed. No spaces or special characters.">
+        </div>
+        
+        <button type="submit" class="submit-btn">Add Classification</button>
+    </form>
+</div>

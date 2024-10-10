@@ -34,27 +34,37 @@
 
 /* NAVIGATOR */
 
-nav {
-  background-color: black;   /* Set background color to black */
+/* Styling the navigation */
+.main-nav {
+  background-color: #000; /* Black background */
+  padding: 10px; /* Add some padding */
+  text-align: center; /* Center the text */
 }
 
-nav ul {
-  list-style: none;          /* Remove default list bullets */
-  display: flex;             /* Use Flexbox for horizontal layout */
-  justify-content: space-around; /* Evenly space the items */
-  padding: 0;                /* Remove default padding from ul */
-  margin: 0;                 /* Remove default margin from ul */
+.main-nav ul {
+  list-style: none; /* Remove bullets from the list */
+  margin: 0;
+  padding: 0;
+  display: flex; /* Use flexbox for alignment */
+  flex-wrap: wrap; /* Ensure items wrap on smaller screens */
+  justify-content: center; /* Center the list items */
 }
 
-nav li {
-  color: white;              /* Set text color to white */
-  font-size: 18px;           /* Set the font size */
-  padding: 10px 20px;        /* Add some padding around the list items */
+.main-nav li {
+  margin: 5px 10px; /* Add spacing between list items */
 }
 
-nav li:hover {
-  background-color: #444;    /* Optional: Darken background when hovering */
-  cursor: pointer;           /* Change cursor to pointer on hover */
+.main-nav a {
+  color: #fff; /* White text color */
+  text-decoration: none; /* Remove underline */
+  padding: 10px 15px; /* Add padding for clickable area */
+  display: inline-block;
+  border-radius: 5px; /* Optional: Rounded corners */
+  transition: background-color 0.3s ease; /* Smooth hover effect */
+}
+
+.main-nav a:hover {
+  background-color: #444; /* Dark grey on hover */
 }
 
 /* BODY */
@@ -496,6 +506,148 @@ p.notice {
   border: 1px solid #4cae4c; /* Border color */
 }
 
+/* vehicle management */
+/* Section Styling */
+.inventory-management {
+  font-family: 'Arial', sans-serif;
+  max-width: 600px;
+  margin: 50px auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Heading Paragraph */
+.inventory-management p {
+  font-size: 1.2rem;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* List Styling */
+.inventory-management ul {
+  list-style-type: none;
+}
+
+.inventory-management li {
+  margin: 10px 0;
+}
+
+/* Link Styling */
+.inventory-management a {
+  display: inline-block;
+  text-decoration: none;
+  padding: 10px 20px;
+  background-color: #007BFF;
+  color: #fff;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+  font-size: 1rem;
+}
+
+.inventory-management a:hover {
+  background-color: #0056b3;
+}
+
+/* Add Classificatrion */
+
+.form-container {
+  background-color: #fff;
+  padding: 30px;
+  max-width: 500px;
+  margin: 0 auto;
+  border-radius: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  margin-top: 0;
+  color: #333;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+#classificationList, input[type="text"], 
+textarea[type="text"], input[type="number"] {
+  width: 100%;
+  padding: 10px;
+  font-size: 1em;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+#classificationList:focus, textarea[type="text"]:focus, 
+input[type="number"]:focus, input[type="text"]:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.5);
+}
+
+.submit-btn {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1em;
+}
+
+.submit-btn:hover {
+  background-color: #0056b3;
+}
+
+/* desciption animation */
+.textarea-container {
+  position: relative;
+}
+
+textarea {
+  transition: border-color 0.3s ease;
+  width: 100%; /* Full width for better responsiveness */
+  padding: 10px; /* Adding some padding for better aesthetics */
+}
+
+textarea.valid {
+  border-color: green;
+  background-color: rgb(232, 251, 232);
+}
+
+textarea.invalid {
+  border-color: red;
+  background-color: #f9eaec;
+}
+
+.validation-icon {
+  position: absolute;
+  top: 10px; /* Adjust based on your needs */
+  right: 10px; /* Adjust based on your needs */
+  display: none; /* Initially hidden */
+}
+
+.validation-icon.valid {
+  display: inline-block;
+  color: green;
+  font-size: 24px; /* Adjust size as needed */
+}
+
+.validation-icon.invalid {
+  display: inline-block;
+  color: red;
+  font-size: 24px; /* Adjust size as needed */
+}
+
 /* Responsive behavior */
 @media (max-width: 768px) {
   .vehicle-detail {
@@ -551,6 +703,17 @@ p.notice {
     grid-template-columns: 1fr 1fr;   /* Single column for small screens */
   }
 }
-/* FOOTER */
+
+/* Ensure the navigation is responsive */
+@media (max-width: 768px) {
+  .main-nav ul {
+    flex-direction: column; /* Stack the list items on smaller screens */
+  }
+
+  .main-nav a {
+    width: 100%; /* Make links take full width in small view */
+  }
+}
+
 
 
