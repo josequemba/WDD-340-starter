@@ -1,6 +1,8 @@
 const utilities = require('../utilities');  // Import from utilities/index
 const accountModel = require('../models/account-model');
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken")
+require("dotenv").config()
 
 /* ****************************************
 *  Deliver login view
@@ -130,7 +132,7 @@ async function registerAccount(req, res) {
 /* ****************************************
 *  Process login
 * *************************************** */
-async function loginAccount(req, res) {
+/* async function loginAccount(req, res) {
   let nav = await utilities.getNav();
   try {
     // Attempt to find the account with the provided email and password
@@ -170,5 +172,90 @@ async function loginAccount(req, res) {
     });
   }
 }
+ */
+/* ****************************************
+ *  Process login request
+ * ************************************ */
+async function loginAccount(req, res) {
+  let nav = await utilities.getNav()
+  const { account_email, account_password } = req.body
+  const accountData = await accountModel.getAccountByEmail(account_email)
+  
+  if (!accountData) {
+    req.flash("notice", "Please check your credentials and try again.")
+    res.status(400).render("account/login", {
+      title: "Login",
+      nav,
+      errors: null,
+      account_email,
+    });
 
-module.exports = { buildLogin, buildRegister, registerAccount, loginAccount }
+    return;
+  }
+
+  try {
+    const validPassword = await bcrypt.compare(account_password, accountData.account_password);
+    
+    if (validPassword) {
+        delete accountData.account_password;
+        const accessToken = jwt.sign(accountData, process.env.ACCESS_TOKEN_SECRET, { expiresIn: 3600 })
+        
+        if(process.env.NODE_ENV === 'development') {
+          res.cookie("jwt", accessToken, { httpOnly: true, maxAge: 3600 * 1000 })
+        } else {
+          res.cookie("jwt", accessToken, { httpOnly: true, secure: true, maxAge: 3600 * 1000 })
+        }
+
+        return res.redirect("/account/")
+    } else {
+      delete accountData.account_password;
+      
+      req.flash("notice", "Please check your email or password and try again.")
+      res.status(400).render("account/login", {
+        title: "Login",
+        nav,
+        errors: null,
+        account_email,
+      });
+
+      return;
+    }
+  } catch (error) {
+     return new Error('Access Forbidden')
+  }
+ }
+
+/* ****************************************
+ *  Process logged in user view
+ * ************************************ */
+ async function buildLoggedInUserView(req, res, next) {
+  try {
+    let nav = await utilities.getNav();
+
+    // Custom error-checking logic
+    if (!nav) {
+      throw new Error("Failed to load navigation.");
+    }
+
+    // If everything is fine, render the register page
+    res.render("account/account", {
+      title: "Logged in",
+      nav,
+      errors: null,
+    });
+  } catch (error) {
+    // If an error occurs, flash a message and render the page again with the error message
+    req.flash("notice", "Sorry, something went wrong: " + error.message);
+    
+    let nav = await utilities.getNav();
+    res.render("account/logged", {
+      title: "Logged in",
+      nav,
+      errors: null,
+    });
+  }
+}
+
+module.exports = { buildLogin, buildRegister, registerAccount, 
+  loginAccount, buildLoggedInUserView 
+}

@@ -6,19 +6,19 @@ const utilities = require('../utilities');  // Import from utilities/index
 const regValidate = require('../utilities/inventory-validation');
 
 // Route to build inventory by classification view
-router.get("/type/:classificationId", invController.buildByClassificationId);
+router.get("/type/:classificationId", utilities.handleErrors(invController.buildByClassificationId));
 
 // Route to build vehicles details view
-router.get("/detail/:invId", invController.buildByInvId);
+router.get("/detail/:invId", utilities.handleErrors(invController.buildByInvId));
 
 // Route to access managment verhicle
-router.get("/", invController.buildManagmentView);
+router.get("/", utilities.handleErrors(invController.buildManagmentView));
 
 // Route to access add classification
-router.get("/add-classification", invController.buildAddClassificationView);
+router.get("/add-classification", utilities.handleErrors(invController.buildAddClassificationView));
 
 // Route to access add inventory
-router.get("/add-inventory", invController.buildAddInventoryView);
+router.get("/add-inventory", utilities.handleErrors(invController.buildAddInventoryView));
 
 // Process adding new classification
 router.post(

@@ -17,6 +17,7 @@ const env = require("dotenv").config()
 const app = express()
 const static = require("./routes/static")
 const bodyParser = require("body-parser")
+const cookieParser = require("cookie-parser")
 
 /* ***********************
  * Middleware
@@ -61,6 +62,11 @@ app.use(static)
 app.use("/inv", inventoryRoute)
 
 app.get("/", utilities.handleErrors(baseController.buildHome))
+
+//will allow cookieParser to be implemented throughout the project.
+app.use(cookieParser())
+
+app.use(utilities.checkJWTToken)
 
 // File Not Found Route - must be last route in list
 app.use(async (req, res, next) => {
