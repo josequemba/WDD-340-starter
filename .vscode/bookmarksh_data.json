@@ -18,17 +18,10 @@
           "id": "uqJxYHp",
           "label": "query to get log",
           "path": "__root__/models/account-model.js",
-          "params": "0,111,0,12,1",
+          "params": "0,108,0,9,1",
           "subs": []
         }
       ]
-    },
-    {
-      "id": "uqJzVWc",
-      "label": "login controller",
-      "path": "__root__/controllers/accountController.js",
-      "params": "0,134,0,0,1",
-      "subs": []
     },
     {
       "id": "uqJBDZp",
