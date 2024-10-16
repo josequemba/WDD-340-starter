@@ -44,6 +44,11 @@ app.use(function(req, res, next){
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 
+//will allow cookieParser to be implemented throughout the project.
+app.use(cookieParser());
+
+//check the token
+app.use(utilities.checkJWTToken);
 
 /* ***********************
  * View Engine and Templates
@@ -62,11 +67,6 @@ app.use(static)
 app.use("/inv", inventoryRoute)
 
 app.get("/", utilities.handleErrors(baseController.buildHome))
-
-//will allow cookieParser to be implemented throughout the project.
-app.use(cookieParser())
-
-app.use(utilities.checkJWTToken)
 
 // File Not Found Route - must be last route in list
 app.use(async (req, res, next) => {

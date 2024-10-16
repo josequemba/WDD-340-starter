@@ -27,7 +27,7 @@ router.post(
 )
 
 // GET route for logged users
-router.get('/', utilities.handleErrors(accountController.buildLoggedInUserView));
+router.get('/', utilities.checkLogin, utilities.handleErrors(accountController.buildLoggedInUserView));
 
 // Export the router
 module.exports = router;

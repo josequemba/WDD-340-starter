@@ -35,4 +35,25 @@ router.post(
     regValidate.checkInvData,
     utilities.handleErrors(invController.buildAddInventory),
 )
+
+//inventory route by the javascript code
+router.get("/getInventory/:classification_id", utilities.handleErrors(invController.getInventoryJSON))
+
+//inventory edit route
+router.get("/edit/:classification_id", utilities.handleErrors(invController.editInventoryView))
+
+//inventory edit click route
+router.post(
+    "/update/", 
+    regValidate.inventoryRules(),
+    regValidate.checkUpdateData,
+    utilities.handleErrors(invController.updateInventory),
+),
+
+//inventory deletion route
+router.get("/delete/:classification_id", utilities.handleErrors(invController.deleteInventoryView)),
+
+//inventory deletion click route
+router.post("/delete/", utilities.handleErrors(invController.deleteInventory)),
+
 module.exports = router;

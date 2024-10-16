@@ -1,0 +1,105 @@
+<% if (title) { %>
+    <h1><%= title %></h1>
+<% } else {
+      res.redirect('/')
+} %>
+
+<div class="form-container">
+
+    <!-- Flash Message Section -->
+    <%- messages() %> 
+
+    <!-- Errors message display from the server side validator -->
+    <% if (errors) { %>
+         <ul class="notice">
+        <% errors.array().forEach(error => { %>
+            <li><%= error.msg %></li>
+        <%  }) %>
+         </ul>
+    <% } %>
+
+    <h2>All fields are required</h2>
+
+    <form id="inventoryForm" action="/inv/update" method="post">
+        <div class="form-group">
+            <label for="classificationName">Classification:</label>
+            <%- classificationNames %>
+        </div>
+
+        <div class="form-group">
+            <label for="invMake">Make:</label>
+            <input type="text" name="inv_make" id="invMake" placeholder="Min of 3 characters" 
+            required minlength="3" value="<%= locals.inv_make %>">
+        </div>
+        
+        <div class="form-group">
+            <label for="invModel">Model:</label>
+            <input type="text" name="inv_model" id="invModel" placeholder="Min of 3 characters" 
+            required minlength="3" value="<%= locals.inv_model %>">
+        </div>
+
+        <div class="form-group">
+            <label for="invDescription">Description</label>
+            <div class="textarea-container">
+                <textarea type="text" name="inv_description" id="invDescription" rows="4" cols="52"
+                    required 
+                    pattern="^[\w\s.,!?'\'-]*$" 
+                    title="Please enter a valid description (10-500 characters)."
+                    maxlength="500"
+                    minlength="10"
+                ><%= locals.inv_description %></textarea>
+                <span class="validation-icon" id="validationIcon"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="invImage">Image Path:</label>
+            <input type="text" name="inv_image" id="invImage" 
+            required value="<%- locals.inv_image || '/images/vehicles/no-image.png' %>">
+        </div>
+
+        <div class="form-group">
+            <label for="invThumbnail">Thumbnail Path:</label>
+            <input type="text" name="inv_thumbnail" id="invThumbnail" 
+            required value="<%- locals.inv_thumbnail || '/images/vehicles/no-image.png' %>">
+        </div>
+
+        <div class="form-group">
+            <label for="invPrice">Price:</label>
+            <input type="number" name="inv_price" id="invPrice" 
+            placeholder="decimal or integer" 
+            required min="0" step="0.01" value="<%= locals.inv_price %>">
+        </div>
+
+        <div class="form-group">
+            <label for="invYear">Year:</label>
+            <input type="number" name="inv_year" id="invYear" 
+            placeholder="4-digit year" 
+            required min="1900" max="<%= new Date().getFullYear() %>" 
+            value="<%= locals.inv_year %>" 
+            pattern="\d{4}" title="Please enter a valid 4-digit year.">
+        </div>
+
+        <div class="form-group">
+            <label for="invMiles">Miles:</label>
+            <input type="text" name="inv_miles" id="invMiles" 
+            placeholder="Digits only" 
+            required pattern="^[0-9]+$" title="Please enter digits only (no commas or periods)." 
+            value="<%= locals.inv_miles %>">
+        </div>
+
+        <div class="form-group">
+            <label for="invColor">Color:</label>
+            <input type="text" name="inv_color" id="invColor" 
+            required value="<%= locals.inv_color %>">
+        </div>
+        
+        <button type="submit" disabled class="submit-btn">Update Vehicle</button>
+        
+        <input type="hidden" name="inv_id"
+        <% if(locals.inv_id) { %> value="<%= locals.inv_id %>"
+        <% } %>>
+    </form>
+</div>
+
+<script src="../../js/inv-update.js"></script>
