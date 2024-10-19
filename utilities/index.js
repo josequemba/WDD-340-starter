@@ -59,6 +59,37 @@ Util.getNav = async function (req, res, next) {
   return list
 }
 
+/* ************************
+ * Constructs the lodin and logout HTML 
+ ************************** */
+Util.getTools = async function (req, res, next, loggedin, userName) {
+
+  if (loggedin == 0) {
+    res.locals.accountData = {
+      account_id: 0,
+      account_firstname: '',
+      account_lastname: '',
+      account_email: '',
+      account_type: '',
+      iat: 0,
+      exp: 0
+    }
+    res.locals.loggedin = 0
+  }
+
+  let tools = '<div id="tools">';
+  if (loggedin !== 0) {
+    tools += `<p>Welcome ${userName},</p>`;
+    tools += '<a title="Click to log out" href="/account/logout">LOGOUT</a>';
+  } else {
+    tools += '<a title="Click to log in" href="/account/login">MY ACCOUNT</a>';
+  }
+  
+  tools += '</div>';
+  
+  return tools;
+}
+
 /* **************************************
 * Build the details view HTML
 * ************************************ */
@@ -164,6 +195,50 @@ Util.checkLogin = (req, res, next) => {
     req.flash("notice", "Please log in.")
     return res.redirect("/account/login")
   }
+}
+
+/* ****************************************
+ *  Check type user
+ * ************************************ */
+Util.checkUserType = (req, res, next) => {
+  const typeAccount = res.locals.accountData ? res.locals.accountData.account_type : null
+   
+  //has to loging to access the page
+  if (typeAccount == null) {
+    req.flash('notice', 'You must be logged in to access this page.');
+    console.log(typeAccount);
+    return res.redirect('/account/login');
+  }
+
+  // Deny access if the account type is not allowed
+  if (typeAccount == "Client") {
+    req.flash('notice', 'You do not have permission to access this page. Login as administrator');
+    console.log(typeAccount);
+    return res.redirect('/account/login');
+  }
+
+  next()
+}
+
+/* ****************************************
+ *  Account view
+ * ************************************ */
+Util.buildAccountView = async function (req, res, next, accountData) {
+  const accountType = accountData.account_type ?? ''
+
+  let accountView = '<h2>Welcome ' + accountData.account_firstname + '</h2>';
+  accountView += "<p>Your're logged in.</p>"
+
+  // Update Account Information link (visible to all users)
+  accountView += '<a href="/account/update/' + accountData.account_id + '" title="Update your account information"> Update Account Information</a>';
+
+  // Conditional logic for Employee or Admin
+  if (accountType === "Employee" || accountType === "Admin") {
+    accountView += "<h3>Inventory Management</h3>";
+    accountView += '<p><a href="/inv" title="Manage Inventory">Manage Inventory</a></p>';
+  }
+
+  return accountView;
 }
 
 /* ****************************************

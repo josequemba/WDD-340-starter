@@ -8,9 +8,13 @@ require("dotenv").config()
 *  Deliver login view
 * *************************************** */
 async function buildLogin(req, res, next) {
-  try {
-    let nav = await utilities.getNav();
+  let nav = await utilities.getNav();
+  const accountData = res.locals.accountData ?? {} 
+  const userName = accountData.account_firstname ?? ""
+  const loggedin = res.locals.loggedin ?? 0
+  const tools = await utilities.getTools(req, res, next, loggedin, userName)
 
+  try {
     // Custom error-checking logic
     if (!nav) {
       throw new Error("Failed to load navigation.");
@@ -21,6 +25,7 @@ async function buildLogin(req, res, next) {
       title: "Login",
       nav,
       errors: null,
+      tools
     });
   } catch (error) {
     // If an error occurs, flash a message and render the page again with the error message
@@ -31,6 +36,7 @@ async function buildLogin(req, res, next) {
       title: "Login",
       nav,
       errors: null,
+      tools
     });
   }
 }
@@ -39,9 +45,13 @@ async function buildLogin(req, res, next) {
 *  Deliver registration view
 * *************************************** */
 async function buildRegister(req, res, next) {
-  try {
-    let nav = await utilities.getNav();
+  let nav = await utilities.getNav();
+  const accountData = res.locals.accountData ?? {} 
+  const userName = accountData.account_firstname ?? ""
+  const loggedin = res.locals.loggedin ?? 0
+  const tools = await utilities.getTools(req, res, next, loggedin, userName)
 
+  try {
     // Custom error-checking logic
     if (!nav) {
       throw new Error("Failed to load navigation.");
@@ -52,6 +62,7 @@ async function buildRegister(req, res, next) {
       title: "Register",
       nav,
       errors: null,
+      tools
     });
   } catch (error) {
     // If an error occurs, flash a message and render the page again with the error message
@@ -62,6 +73,7 @@ async function buildRegister(req, res, next) {
       title: "Register",
       nav,
       errors: null,
+      tools
     });
   }
 }
@@ -72,6 +84,10 @@ async function buildRegister(req, res, next) {
 async function registerAccount(req, res) {
   let nav = await utilities.getNav()
   const { account_firstname, account_lastname, account_email, account_password } = req.body
+  const accountData = res.locals.accountData ?? {} 
+  const userName = accountData.account_firstname ?? ""
+  const loggedin = res.locals.loggedin ?? 0
+  const tools = await utilities.getTools(req, res, next, loggedin, userName)
 
   // Hash the password before storing
   let hashedPassword;
@@ -86,6 +102,7 @@ async function registerAccount(req, res) {
       title: "Registration",
       nav,
       errors: null,
+      tools
     })
   }
 
@@ -108,6 +125,7 @@ async function registerAccount(req, res) {
         title: "Login",
         nav,
         errors: null,
+        tools
       });
     } else {
       req.flash("notice", "Sorry, the registration failed.");
@@ -115,6 +133,7 @@ async function registerAccount(req, res) {
         title: "Registration",
         nav,
         errors: null,
+        tools
       });
     }
   } catch (error) {
@@ -125,6 +144,7 @@ async function registerAccount(req, res) {
       title: "Registration",
       nav,
       errors: null,
+      tools
     });
   }
 }
@@ -176,10 +196,17 @@ async function registerAccount(req, res) {
 /* ****************************************
  *  Process login request
  * ************************************ */
-async function loginAccount(req, res) {
+async function loginAccount(req, res, next) {
   let nav = await utilities.getNav()
   const { account_email, account_password } = req.body
   const accountData = await accountModel.getAccountByEmail(account_email)
+
+  console.log("eeefrergrgejrngjgbfrvgr")
+  console.log(accountData)
+
+  const userName = accountData.account_firstname ?? ""
+  const loggedin = res.locals.loggedin ?? 0
+  const tools = await utilities.getTools(req, res, next, loggedin, userName)
   
   if (!accountData) {
     req.flash("notice", "Please check your credentials and try again.")
@@ -188,6 +215,7 @@ async function loginAccount(req, res) {
       nav,
       errors: null,
       account_email,
+      tools
     });
 
     return;
@@ -216,6 +244,7 @@ async function loginAccount(req, res) {
         nav,
         errors: null,
         account_email,
+        tools
       });
 
       return;
@@ -229,19 +258,29 @@ async function loginAccount(req, res) {
  *  Process logged in user view
  * ************************************ */
  async function buildLoggedInUserView(req, res, next) {
-  try {
-    let nav = await utilities.getNav();
+  let nav = await utilities.getNav();
+  const accountData = res.locals.accountData ?? {} 
+  const userName = accountData.account_firstname ?? ""
+  const loggedin = res.locals.loggedin ?? 0
+  const tools = await utilities.getTools(req, res, next, loggedin, userName)
+  const account_id = accountData.account_id;
 
+  const accountBodyContent = await utilities.buildAccountView(req, res, next, accountData);
+
+  try {
     // Custom error-checking logic
     if (!nav) {
       throw new Error("Failed to load navigation.");
     }
-
+    
     // If everything is fine, render the register page
     res.render("account/account", {
       title: "Logged in",
       nav,
       errors: null,
+      tools,
+      accountBodyContent,
+      account_id
     });
   } catch (error) {
     // If an error occurs, flash a message and render the page again with the error message
@@ -252,10 +291,179 @@ async function loginAccount(req, res) {
       title: "Logged in",
       nav,
       errors: null,
+      tools
     });
   }
 }
 
+/* ****************************************
+ *  Process logout user
+ * ************************************ */
+async function logoutAccount(req, res, next) {
+  res.clearCookie("jwt")
+  req.locals = undefined;
+
+  // Destroy the session to log the user out
+  res.locals.accountData = {}
+  res.locals.loggedin = 0
+
+  /* let nav = await utilities.getNav();
+  const accountData = res.locals.accountData ?? {} 
+  const userName = accountData.account_firstname ?? ""
+  const loggedin = res.locals.loggedin ?? 0
+  const tools = await utilities.getTools(req, res, next, loggedin, userName) */
+    
+  // Optionally, flash a message
+  req.flash("success", "You have successfully logged out.");
+  
+  // Redirect to the login page
+  res.redirect("/");
+  next()
+}
+
+/* ****************************************
+ *  Process account update
+ * ************************************ */
+async function updateAccount(req, res, next) {
+  let nav = await utilities.getNav()
+  const accountId= req.params.account_id
+  const accountDataBeforeUpdate = await accountModel.getAccountByAccountId(accountId)
+  const { account_firstname, account_lastname, account_email} = accountDataBeforeUpdate
+  const accountData = res.locals.accountData ?? {} 
+  const userName = accountData.account_firstname ?? ""
+  const loggedin = res.locals.loggedin ?? 0
+  const tools = await utilities.getTools(req, res, next, loggedin, userName)
+  const account_id = accountData.account_id;
+  const accountBodyContent = await utilities.buildAccountView(req, res, next, accountData);
+  try {
+    return res.render("account/update-account", {
+      title: "Update Account",
+      nav,
+      errors: null,
+      tools,
+      account_id,
+      account_firstname,
+      account_lastname,
+      account_email
+    })
+  } catch (error) {
+    req.flash("notice", 'Sorry, Something went wrong, please try again later')
+    return res.status(500).render("account/update-account", {
+      title: "Logged in",
+      nav,
+      errors: null,
+      tools,
+      account_id,
+      accountBodyContent
+    })
+  }
+}
+
+/* ****************************************
+ *  Process update Account Credentials
+ * ************************************ */
+async function updateAccountCredentials(req, res, next) {
+  let nav = await utilities.getNav()
+  const { account_firstname, account_lastname, account_email} = req.body
+  const accountData = res.locals.accountData ?? {} 
+  const userName = accountData.account_firstname ?? ""
+  const loggedin = res.locals.loggedin ?? 0
+  const tools = await utilities.getTools(req, res, next, loggedin, userName)
+  const account_id = accountData.account_id;
+
+  try {
+    const regResult = await accountModel.updateCredentialsById(
+      account_firstname, 
+      account_lastname, 
+      account_email,
+      account_id
+    )
+
+    if (regResult) {
+      const accountData = await accountModel.getAccountByEmail(account_email)
+      const accessToken = jwt.sign(accountData, process.env.ACCESS_TOKEN_SECRET, { expiresIn: 3600 })
+      
+      if(process.env.NODE_ENV === 'development') {
+        res.cookie("jwt", accessToken, { httpOnly: true, maxAge: 3600 * 1000 })
+      } else {
+        res.cookie("jwt", accessToken, { httpOnly: true, secure: true, maxAge: 3600 * 1000 })
+      }
+      const userName = accountData.account_firstname ?? ""
+      const loggedin = res.locals.loggedin ?? 0
+      const accountBodyContent = await utilities.buildAccountView(req, res, next, accountData);
+      const tools = await utilities.getTools(req, res, next, loggedin, userName)
+
+      req.flash("success", "You've updated your credentials successfully")
+      return res.render("account/account", {
+        title: "Logged in",
+        nav,
+        errors: null,
+        tools,
+        accountBodyContent,
+        account_id
+      });
+    }
+  } catch (error) {
+    req.flash("notice", 'Sorry, Something went wrong, please try again later')
+    return res.render("account/update-account", {
+      title: "Update Account",
+      nav,
+      errors: null,
+      tools,
+      account_id,
+      account_firstname,
+      account_lastname,
+      account_email
+    })
+  }
+}
+
+  /* ******************************
+ * Check data and return errors or continue to update password
+ * ***************************** */
+  async function updateAccountPassword (req, res, next) {
+    let nav = await utilities.getNav()
+    const { account_password } = req.body
+    const accountData = res.locals.accountData ?? {} 
+    const { account_firstname, account_lastname, account_email } = accountData
+    const userName = accountData.account_firstname ?? ""
+    const loggedin = res.locals.loggedin ?? 0
+    const tools = await utilities.getTools(req, res, next, loggedin, userName)
+    const account_id = accountData.account_id;
+    const accountBodyContent = await utilities.buildAccountView(req, res, next, accountData);
+    let hashedPassword;
+    
+    try {
+      hashedPassword = await bcrypt.hashSync(account_password, 10)
+      const regResult = await accountModel.updatePasswordById(hashedPassword, account_id)
+
+      if (regResult) {
+        req.flash("success", "You've updated your password successfully")
+        return res.render("account/account", {
+          title: "Logged in",
+          nav,
+          errors: null,
+          tools,
+          accountBodyContent,
+          account_id
+        });
+      }
+    } catch (error) {
+      req.flash("notice", 'Sorry, Something went wrong, please try again later')
+      return res.render("account/update-account", {
+        title: "Update Account",
+        nav,
+        errors: null,
+        tools,
+        account_id,
+        account_firstname,
+        account_lastname,
+        account_email
+      })
+    }
+  }
+
 module.exports = { buildLogin, buildRegister, registerAccount, 
-  loginAccount, buildLoggedInUserView 
+  loginAccount, buildLoggedInUserView, logoutAccount, updateAccount,
+  updateAccountCredentials, updateAccountPassword,
 }

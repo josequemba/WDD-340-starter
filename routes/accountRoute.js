@@ -29,5 +29,27 @@ router.post(
 // GET route for logged users
 router.get('/', utilities.checkLogin, utilities.handleErrors(accountController.buildLoggedInUserView));
 
+// GET route for logout the user
+router.get('/logout', utilities.handleErrors(accountController.logoutAccount));
+
+// GET route for acount update
+router.get(
+    '/update/:account_id', 
+    utilities.handleErrors(accountController.updateAccount)
+);
+
+router.post(
+    '/update/credentials', 
+    regValidate.credentialsRules(),
+    regValidate.checkUpdateAcountData,
+    utilities.handleErrors(accountController.updateAccountCredentials)
+);
+
+router.post(
+    '/update/password', 
+    regValidate.passwordRules(),
+    regValidate.checkUpdateAcountData,
+    utilities.handleErrors(accountController.updateAccountPassword)
+);
 // Export the router
 module.exports = router;
