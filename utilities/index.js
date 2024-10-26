@@ -2,6 +2,7 @@ const invModel = require("../models/inventory-model")
 const Util = {}
 const jwt = require("jsonwebtoken")
 require("dotenv").config()
+const accountModel = require('../models/account-model');
 
 /* **************************************
 * Build the classification view HTML
@@ -79,7 +80,7 @@ Util.getTools = async function (req, res, next, loggedin, userName) {
 
   let tools = '<div id="tools">';
   if (loggedin !== 0) {
-    tools += `<p>Welcome ${userName},</p>`;
+    tools += `<a title="Click to log out" href="/account"><p>Welcome ${userName},</p></a>`;
     tools += '<a title="Click to log out" href="/account/logout">LOGOUT</a>';
   } else {
     tools += '<a title="Click to log in" href="/account/login">MY ACCOUNT</a>';
@@ -223,7 +224,7 @@ Util.checkUserType = (req, res, next) => {
 /* ****************************************
  *  Account view
  * ************************************ */
-Util.buildAccountView = async function (req, res, next, accountData) {
+/* Util.buildAccountView = async function (req, res, next, accountData) {
   const accountType = accountData.account_type ?? ''
 
   let accountView = '<h2>Welcome ' + accountData.account_firstname + '</h2>';
@@ -239,7 +240,88 @@ Util.buildAccountView = async function (req, res, next, accountData) {
   }
 
   return accountView;
-}
+} */
+
+/* ****************************************
+ *  Profile view
+ * ************************************ */
+Util.buildProfileView = async function (req, res, next) {
+  const accountId = res.locals.accountData.account_id;
+  const data = await accountModel.getFullAccountByAccountId(accountId);
+  const fullAccountData = data 
+  // Ensure that account_firstname and account_lastname are defined before using them
+  const fullName = `${fullAccountData.account_firstname} ${fullAccountData.account_lastname}`.trim();
+  const username = `${fullAccountData.account_firstname}${fullAccountData.account_lastname}`.trim();
+
+  // Start building the profile container HTML
+  let profileContainer = '<div class="profile-container">';
+
+  // Profile header section
+  profileContainer += `
+    <div class="profile-header">
+      <img src="${fullAccountData.account_profilepicture || 'default-profile-pic.jpg'}" alt="Profile Picture Not provided or not available" class="profile-pic">
+      <h1 class="full-name">${fullName || 'John Doe'}</h1>
+      <p class="username">@${username || 'johndoe'}</p>
+    </div>`;
+
+  // Personal information section
+  profileContainer += `
+    <div class="personal-info">
+      <p class="bio">${fullAccountData.account_bio || 'No bio available'}</p>
+      <p class="location">Location: ${fullAccountData.account_location || 'Not specified'}</p>
+      <p class="joined-date">
+        Joined: ${fullAccountData.account_joineddate ? 
+          new Date(fullAccountData.account_joineddate).toLocaleDateString('en-US', {
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+          }) : 
+          'Not available'}
+      </p>
+    </div>`;
+
+  // Contact information section
+  profileContainer += `
+    <div class="contact-info">
+      <p>Email: <a href="mailto:${fullAccountData.account_email || '#'}">${fullAccountData.account_email || 'Not provided'}</a></p>
+      <p>Phone: ${fullAccountData.account_phone || 'Not provided'}</p>
+      <div class="social-links">`;
+
+  // Assuming fullAccountData.account_socialLink is a single social link object 
+  // with properties 'platform' and 'link'
+  if (fullAccountData.account_sociallink) {
+    const { platform, link } = fullAccountData.account_sociallink;
+    profileContainer += `<a href="${link}" target="_blank"><i class="fab fa-${platform}"></i></a>`;
+  }
+
+  profileContainer += `
+      </div>
+    </div>`;
+
+  // Account actions (e.g., Edit Profile, View Activity, Logout)
+  profileContainer += `
+    <div class="account-actions">
+      <a href="/account/update/${fullAccountData.account_id}" title="Update your account information">Update Account Information</a>
+    </div>`;
+
+  // Conditional logic for Employee or Admin
+  if (fullAccountData.account_type.trim() == "Employee" || fullAccountData.account_type.trim() == "Admin") {
+    
+    console.log('eliud 6547673566764567')
+    console.log(fullAccountData.account_type)
+
+    profileContainer += `
+    <div class="account-actions">
+      <h3>Inventory Management</h3>
+      <p><a href="/inv" title="Manage Inventory">Manage Inventory</a></p>
+    </div>`;
+  }
+
+  // Close the profile container div
+  profileContainer += '</div>';
+
+  return profileContainer;
+};
 
 /* ****************************************
  * Middleware For Handling Errors

@@ -74,16 +74,26 @@ async function getAccountByAccountId (account_id) {
 }
 
 /* ***************************
- *  Update accont credentials
+ *  Update account credentials
  * ************************** */
-async function updateCredentialsById(account_firstname, account_lastname, account_email, account_id) {
+async function updateCredentialsById(account_firstname, account_lastname, account_email, account_profilepicture, account_phone, account_bio, account_location, account_sociallinks, account_id) {
   try {
     const sql =
-      "UPDATE public.account SET account_firstname = $1, account_lastname = $2, account_email = $3 WHERE account_id = $4 RETURNING *"
-    const data = await pool.query(sql, [account_firstname, account_lastname, account_email, account_id])
-    return data.rows[0]
+      "UPDATE public.account SET account_firstname = $1, account_lastname = $2, account_email = $3, account_profilepicture = $4, account_phone = $5, account_bio = $6, account_location = $7, account_sociallinks = $8 WHERE account_id = $9 RETURNING *";
+    const data = await pool.query(sql, [
+      account_firstname, 
+      account_lastname, 
+      account_email,
+      account_profilepicture,
+      account_phone,
+      account_bio,
+      account_location,
+      account_sociallinks, 
+      account_id
+    ]);
+    return data.rows[0];
   } catch (error) {
-    console.error("model error: " + error)
+    console.error("model error: " + error);
   }
 }
 
@@ -101,7 +111,23 @@ async function updatePasswordById(account_password, account_id) {
   }
 }
 
+/* *****************************
+* Return account full data using account id
+* ***************************** */
+async function getFullAccountByAccountId(account_id) {
+  try {
+    const result = await pool.query(
+      'SELECT account_id, account_firstname, account_lastname, account_email, account_type, account_profilepicture, account_phone, account_bio, account_location, account_joineddate, account_sociallinks FROM account WHERE account_id = $1',
+      [account_id]
+    );
+    return result.rows[0]; // Return the first row of the result
+  } catch (error) {
+    console.error(error); // Log the error for debugging
+    throw new Error("No matching account id found");
+  }
+}
+
 module.exports = { registerAccount, checkExistingEmail, getAccountByEmail, getAccountByAccountId,
-  updateCredentialsById, updatePasswordById, checkExistingEmailAllowSame
+  updateCredentialsById, updatePasswordById, checkExistingEmailAllowSame, getFullAccountByAccountId
  }
   

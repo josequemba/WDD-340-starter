@@ -150,6 +150,40 @@ validate.credentialsRules = () => {
           throw new Error("Email exists. Please use different email")
         }
     }),
+    // Profile picture URL (optional)
+    body("account_profilepicture")
+      .trim()
+      .notEmpty()
+      .withMessage("Please provide a valid URL for the profile picture."),
+
+    // Phone number is required and must match the pattern
+    body("account_phone")
+      .trim()
+      .notEmpty()
+      .matches(/^\+?[\d\s().-]{10,15}$/)
+      .withMessage("Please enter a valid phone number with 10-15 digits."),
+
+    // Bio is required, length 10-500, and must match allowed characters
+    body("account_bio")
+      .trim()
+      .notEmpty()
+      .isLength({ min: 10, max: 500 })
+      .matches(/^[\w\s.,!?'\'-]*$/)
+      .withMessage("Please enter a valid bio (10-500 characters)."),
+
+    // Location is required and limited to 100 characters
+    body("account_location")
+      .trim()
+      .notEmpty()
+      .isLength({ max: 100 })
+      .withMessage("Please enter a valid location (up to 100 characters)."),
+
+    // Social media link is required and must be a valid URL
+    body("account_sociallinks")
+      .trim()
+      .notEmpty()
+      .isURL({ protocols: ['http', 'https'], require_protocol: true })
+      .withMessage("Please enter a valid URL starting with http or https."),
   ]
 }
 
@@ -178,10 +212,15 @@ validate.passwordRules = () => {
  * ***************************** */
    validate.checkUpdateAcountData = async (req, res, next) => {
     const { 
-      account_email, 
-      account_id,
       account_firstname,
-      account_lastname, 
+      account_lastname,
+      account_email,
+      account_profilepicture,
+      account_phone,
+      account_bio,
+      account_location,
+      account_sociallinks,
+      account_id,
     } = req.body
 
     const accountData = res.locals.accountData ?? {} 
@@ -198,10 +237,15 @@ validate.passwordRules = () => {
         nav,
         errors,
         tools,
-        account_id,
         account_firstname,
         account_lastname,
-        account_email
+        account_email,
+        account_profilepicture,
+        account_phone,
+        account_bio,
+        account_location,
+        account_sociallinks,
+        account_id,
       })
     }
     next()

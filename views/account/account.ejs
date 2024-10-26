@@ -7,8 +7,8 @@
 <!-- Flash Message Section -->
 <%- messages() %> 
 
-<%- accountBodyContent %>
-
 <input type="hidden" name="inv_id"
 <% if(account_id) { %> value="<%= account_id %>"
 <% } %>>
+
+<%- profileViewData %>

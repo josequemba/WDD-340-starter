@@ -109,7 +109,7 @@ invCont.buildAddInventoryView = async function (req, res, next) {
   })
 };
 
-invCont.buildAddInventory = async function (req, res) {
+invCont.buildAddInventory = async function (req, res, next) {
   const accountData = res.locals.accountData ?? {} 
   const userName = accountData.account_firstname ?? ""
   const loggedin = res.locals.loggedin ?? 0
@@ -162,7 +162,7 @@ invCont.buildAddInventory = async function (req, res) {
   }
 }
 
-invCont.buildAddClassification = async function (req, res) {
+invCont.buildAddClassification = async function (req, res, next) {
   let nav = await utilities.getNav();
   const accountData = res.locals.accountData ?? {} 
   const userName = accountData.account_firstname ?? ""

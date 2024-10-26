@@ -34,7 +34,74 @@
             <label for="email">Email Address:</label>
             <input type="email" name="account_email" id="accountEmail" required value="<%= account_email%>">
         </div>
-
+        
+        <div class="form-group">
+            <label for="accountProfilepicture">Profile Picture:</label>
+            <input type="text" name="account_profilepicture" id="accountProfilepicture" 
+            required value="<%- locals.account_profilepicture %>">
+        </div>
+        
+        <div class="form-group">
+            <label for="accountPhone">Phone Number:</label>
+            <input 
+              type="tel" 
+              name="account_phone" 
+              id="accountPhone" 
+              required 
+              value="<%- locals.account_phone %>" 
+              placeholder="+1 (555) 123-4567"
+              pattern="^\+?[\d\s().-]{10,15}$" 
+              title="Please enter a valid phone number with 10-15 digits."
+            >
+        </div>
+        
+        <div class="form-group">
+            <label for="accountBio">Bio:</label>
+                <div class="textarea-container">
+                    <textarea 
+                    type="text"
+                    name="account_bio" 
+                    id="accountBio" 
+                    rows="4" 
+                    cols="52"
+                    required 
+                    pattern="^[\w\s.,!?'\'-]*$" 
+                    title="Please enter a valid description (10-500 characters)."
+                    maxlength="500"
+                    minlength="10"
+                    ><%= locals.account_bio %></textarea>
+                <span class="validation-icon" id="validationIcon"></span>
+            </div>
+        </div>
+    
+        <div class="form-group">
+        <label for="accountLocation">Location:</label>
+        <input 
+            type="text" 
+            name="account_location" 
+            id="accountLocation" 
+            required 
+            value="<%- locals.account_location %>" 
+            placeholder="City, State, Country"
+            maxlength="100"
+            title="Please enter a valid location (e.g., City, State, Country)."
+        >
+        </div>
+    
+        <div class="form-group">
+        <label for="accountSociallinks">Social Media Link:</label>
+        <input 
+            type="url" 
+            name="account_sociallinks" 
+            id="accountSociallinks" 
+            required 
+            value="<%- locals.account_sociallinks %>" 
+            placeholder="https://example.com"
+            pattern="https?://.*" 
+            title="Please enter a valid URL starting with http or https."
+        >
+        </div>
+        
         <input type="hidden" name="account_id"
         <% if(account_id) { %> value="<%= account_id %>"
         <% } %>>

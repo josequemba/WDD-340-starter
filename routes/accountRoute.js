@@ -27,19 +27,21 @@ router.post(
 )
 
 // GET route for logged users
-router.get('/', utilities.checkLogin, utilities.handleErrors(accountController.buildLoggedInUserView));
+router.get('/', utilities.handleErrors(accountController.buildLoggedInUserView));
 
 // GET route for logout the user
 router.get('/logout', utilities.handleErrors(accountController.logoutAccount));
 
 // GET route for acount update
 router.get(
-    '/update/:account_id', 
+    '/update/:account_id',
+    utilities.checkLogin, 
     utilities.handleErrors(accountController.updateAccount)
 );
 
 router.post(
     '/update/credentials', 
+    utilities.checkLogin,
     regValidate.credentialsRules(),
     regValidate.checkUpdateAcountData,
     utilities.handleErrors(accountController.updateAccountCredentials)
@@ -47,6 +49,7 @@ router.post(
 
 router.post(
     '/update/password', 
+    utilities.checkLogin,
     regValidate.passwordRules(),
     regValidate.checkUpdateAcountData,
     utilities.handleErrors(accountController.updateAccountPassword)

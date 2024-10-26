@@ -51,3 +51,12 @@ UPDATE public.inventory
     inv_thumbnail = REPLACE(
 		inv_thumbnail, '/images/', '/images/vehicles/'
 	);
+
+--my own alterations
+ALTER TABLE Public.account 
+	ADD COLUMN account_profilepicture VARCHAR(255) DEFAULT '/images/profile/profile-pc.jpg',
+	ADD COLUMN account_phone VARCHAR(15) DEFAULT NULL,
+	ADD COLUMN account_bio TEXT DEFAULT NULL,
+	ADD COLUMN account_location VARCHAR(255) DEFAULT NULL,
+	ADD COLUMN account_joineddate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	ADD COLUMN account_sociallinks TEXT DEFAULT NULL;

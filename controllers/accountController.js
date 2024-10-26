@@ -81,7 +81,7 @@ async function buildRegister(req, res, next) {
 /* ****************************************
 *  Process Registration
 * *************************************** */
-async function registerAccount(req, res) {
+async function registerAccount(req, res, next) {
   let nav = await utilities.getNav()
   const { account_firstname, account_lastname, account_email, account_password } = req.body
   const accountData = res.locals.accountData ?? {} 
@@ -265,7 +265,7 @@ async function loginAccount(req, res, next) {
   const tools = await utilities.getTools(req, res, next, loggedin, userName)
   const account_id = accountData.account_id;
 
-  const accountBodyContent = await utilities.buildAccountView(req, res, next, accountData);
+  const profileViewData = await utilities.buildProfileView(req, res, next);
 
   try {
     // Custom error-checking logic
@@ -279,19 +279,20 @@ async function loginAccount(req, res, next) {
       nav,
       errors: null,
       tools,
-      accountBodyContent,
-      account_id
+      account_id,
+      profileViewData
     });
   } catch (error) {
     // If an error occurs, flash a message and render the page again with the error message
     req.flash("notice", "Sorry, something went wrong: " + error.message);
     
     let nav = await utilities.getNav();
-    res.render("account/logged", {
-      title: "Logged in",
+    res.render("account/login", {
+      title: "Login",
       nav,
       errors: null,
-      tools
+      tools,
+      profileViewData
     });
   }
 }
@@ -327,24 +328,41 @@ async function logoutAccount(req, res, next) {
 async function updateAccount(req, res, next) {
   let nav = await utilities.getNav()
   const accountId= req.params.account_id
-  const accountDataBeforeUpdate = await accountModel.getAccountByAccountId(accountId)
-  const { account_firstname, account_lastname, account_email} = accountDataBeforeUpdate
+  const accountDataBeforeUpdate = await accountModel.getFullAccountByAccountId(accountId)
+  const { 
+    account_firstname, 
+    account_lastname, 
+    account_email, 
+    account_type, 
+    account_profilepicture, 
+    account_phone, account_bio, 
+    account_location, 
+    account_joineddate, 
+    account_sociallinks
+  } = accountDataBeforeUpdate
+
   const accountData = res.locals.accountData ?? {} 
-  const userName = accountData.account_firstname ?? ""
+  const userName = account_firstname ?? ""
   const loggedin = res.locals.loggedin ?? 0
   const tools = await utilities.getTools(req, res, next, loggedin, userName)
   const account_id = accountData.account_id;
-  const accountBodyContent = await utilities.buildAccountView(req, res, next, accountData);
+  const profileViewData = await utilities.buildProfileView(req, res, next);
   try {
     return res.render("account/update-account", {
       title: "Update Account",
       nav,
       errors: null,
       tools,
-      account_id,
-      account_firstname,
-      account_lastname,
-      account_email
+      account_id, 
+      account_firstname, 
+      account_lastname, 
+      account_email, 
+      account_type, 
+      account_profilepicture, 
+      account_phone, account_bio, 
+      account_location, 
+      account_joineddate, 
+      account_sociallinks
     })
   } catch (error) {
     req.flash("notice", 'Sorry, Something went wrong, please try again later')
@@ -354,7 +372,7 @@ async function updateAccount(req, res, next) {
       errors: null,
       tools,
       account_id,
-      accountBodyContent
+      profileViewData
     })
   }
 }
@@ -364,19 +382,34 @@ async function updateAccount(req, res, next) {
  * ************************************ */
 async function updateAccountCredentials(req, res, next) {
   let nav = await utilities.getNav()
-  const { account_firstname, account_lastname, account_email} = req.body
+  const {
+    account_firstname,
+    account_lastname,
+    account_email,
+    account_profilepicture,
+    account_phone,
+    account_bio,
+    account_location,
+    account_sociallinks,
+    account_id,
+  } = req.body
+
   const accountData = res.locals.accountData ?? {} 
   const userName = accountData.account_firstname ?? ""
   const loggedin = res.locals.loggedin ?? 0
   const tools = await utilities.getTools(req, res, next, loggedin, userName)
-  const account_id = accountData.account_id;
 
   try {
     const regResult = await accountModel.updateCredentialsById(
-      account_firstname, 
-      account_lastname, 
+      account_firstname,
+      account_lastname,
       account_email,
-      account_id
+      account_profilepicture,
+      account_phone,
+      account_bio,
+      account_location,
+      account_sociallinks,
+      account_id,
     )
 
     if (regResult) {
@@ -390,7 +423,7 @@ async function updateAccountCredentials(req, res, next) {
       }
       const userName = accountData.account_firstname ?? ""
       const loggedin = res.locals.loggedin ?? 0
-      const accountBodyContent = await utilities.buildAccountView(req, res, next, accountData);
+      const profileViewData = await utilities.buildProfileView(req, res, next);
       const tools = await utilities.getTools(req, res, next, loggedin, userName)
 
       req.flash("success", "You've updated your credentials successfully")
@@ -399,7 +432,7 @@ async function updateAccountCredentials(req, res, next) {
         nav,
         errors: null,
         tools,
-        accountBodyContent,
+        profileViewData,
         account_id
       });
     }
@@ -430,7 +463,7 @@ async function updateAccountCredentials(req, res, next) {
     const loggedin = res.locals.loggedin ?? 0
     const tools = await utilities.getTools(req, res, next, loggedin, userName)
     const account_id = accountData.account_id;
-    const accountBodyContent = await utilities.buildAccountView(req, res, next, accountData);
+    const profileViewData = await utilities.buildProfileView(req, res, next);
     let hashedPassword;
     
     try {
@@ -444,7 +477,7 @@ async function updateAccountCredentials(req, res, next) {
           nav,
           errors: null,
           tools,
-          accountBodyContent,
+          profile,
           account_id
         });
       }

@@ -589,7 +589,8 @@ label {
 }
 
 #classificationList, input[type="text"], 
-textarea[type="text"], input[type="number"] {
+textarea[type="text"], input[type="number"], 
+input[type="tel"], input[type="url"]  {
   width: 100%;
   padding: 10px;
   font-size: 1em;
@@ -599,7 +600,8 @@ textarea[type="text"], input[type="number"] {
 }
 
 #classificationList:focus, textarea[type="text"]:focus, 
-input[type="number"]:focus, input[type="text"]:focus {
+input[type="number"]:focus, input[type="text"]:focus 
+input[type="tel"]:focus, input[type="url"]:focus {
   border-color: #007bff;
   outline: none;
   box-shadow: 0px 0px 5px rgba(0, 123, 255, 0.5);
@@ -657,6 +659,110 @@ textarea.invalid {
   display: inline-block;
   color: red;
   font-size: 24px; /* Adjust size as needed */
+}
+
+/* Profile container specific styles */
+.profile-container {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0 auto;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 100%;
+}
+
+/* Profile header */
+.profile-container .profile-header {
+  text-align: center;
+  background-color: #007BFF;
+  padding: 30px 0;
+  color: #fff;
+  border-radius: 8px 8px 0 0; /* Rounded top corners */
+}
+
+.profile-container .profile-pic {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  border: 5px solid #fff;
+  margin-bottom: 10px;
+}
+
+.profile-container .full-name {
+  font-size: 24px;
+  margin: 10px 0;
+}
+
+.profile-container .username {
+  font-size: 14px;
+  color: #ccc;
+}
+
+/* Personal, contact, and recent activity info */
+.profile-container .personal-info, 
+.profile-container .contact-info, 
+.profile-container .recent-activity {
+  margin: 20px;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Social links */
+.profile-container .social-links a {
+  margin: 0 10px;
+  color: #007BFF;
+  font-size: 20px;
+  text-decoration: none;
+}
+
+.profile-container .social-links a:hover {
+  color: #0056b3; /* Darker blue on hover */
+}
+
+/* Account actions */
+.profile-container .account-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px 0;
+}
+
+.profile-container .account-actions button,
+.profile-container .account-actions a {
+  background-color: #007BFF;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  margin: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+}
+
+.profile-container .account-actions button:hover,
+.profile-container .account-actions a:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}
+
+/* Recent activity section */
+.profile-container .recent-activity h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.profile-container .recent-activity ul {
+  list-style: none;
+  padding: 0;
+}
+
+.profile-container .recent-activity ul li {
+  margin-bottom: 10px;
+  padding: 10px;
+  background: #f8f9fa; /* Light background for activity items */
+  border-radius: 5px;
 }
 
 /* Responsive behavior */
